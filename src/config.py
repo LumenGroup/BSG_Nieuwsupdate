@@ -26,25 +26,25 @@ RSS_BRONNEN = [
 	    "naam": "FlexNieuws",
 	    "categorie": "Nieuws",
 	    "url": "https://www.flexnieuws.nl/feed/",
-	    "filter_op_trefwoord": True,
+	    "filter_op_trefwoord": False,
     },
     {
 	    "naam": "Verenigde Betaal Instellingen Nederland (VBIN)",
 	    "categorie": "Brancheorganisatie",
 	    "url": "https://www.vbin.nl/category/nieuws/feed/",
-	    "filter_op_trefwoord": True,
+	    "filter_op_trefwoord": False,
     },
     {
 	    "naam": "Vereniging van Compliance Professionals (VCO)",
 	    "categorie": "Brancheorganisatie",
 	    "url": "https://www.vco.nl/feed/",
-	    "filter_op_trefwoord": True,
+	    "filter_op_trefwoord": False,
     },
     {
 	    "naam": "Verenigde Bitcoinbedrijven Nederland (VBNL)",
 	    "categorie": "Brancheorganisatie",
 	    "url": "https://www.vbnl.org/feed/",
-	    "filter_op_trefwoord": True,
+	    "filter_op_trefwoord": False,
     },
     {
 	    "naam": "De Nederlandsche Bank (DNB)",
@@ -56,7 +56,7 @@ RSS_BRONNEN = [
 	    "naam": "Autoriteit Financiële Markten (AFM)",
         "categorie": "Toezichthouder (NL)",
         "url": "https://www.afm.nl/nl-nl/rss-feed/nieuws-professionals",
-        "filter_op_trefwoord": True,
+        "filter_op_trefwoord": False,
     },
     {
 	    "naam": "Nederlandse Zorgautoriteit (NZA)",
@@ -68,7 +68,7 @@ RSS_BRONNEN = [
 	    "naam": "Financial Intelligence Unit-Nederland (FIU-Nederland)",
 	    "categorie": "Toezichthouder (NL)",
 	    "url": "https://www.fiu-nederland.nl/?feed=rss2",
-	    "filter_op_trefwoord": True,
+	    "filter_op_trefwoord": False,
     },
     {
 	    "naam": "Autoriteit Consument & Markt (ACM)",
