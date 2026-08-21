@@ -81,7 +81,13 @@ RSS_BRONNEN = [
         "categorie": "Toezichthouder (EU)",
         "url": "https://eba.europa.eu/news-press/news/rss.xml",
         "filter_op_trefwoord": True,
-    }
+    },
+	{
+		"naam": "European Central Bank (ECB)",
+		"categorie": "Centrale Bank",
+		"url": "https://www.bankingsupervision.europa.eu/rss/supervision_newsletter.rss",
+		"filter_op_trefwoord": False,
+	}
 ]
 
 # --- Trefwoorden -------------------------------
