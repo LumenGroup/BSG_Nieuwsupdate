@@ -127,7 +127,7 @@ def haal_rss(bron: dict) -> list:
     return items
 
 
-# ------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 def verzamel_alles() -> list:
     alles = []
     for bron in config.RSS_BRONNEN:
