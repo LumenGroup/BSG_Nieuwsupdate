@@ -57,3 +57,17 @@ jobs:
       - name: Publiceren naar GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Houdt de geplande workflow actief. GitHub zet die anders uit
+  # na 60 dagen zonder activiteit in de repo.
+  keepalive:
+    needs: bouwen-en-publiceren
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - name: Workflow actief houden
+        run: gh api -X PUT repos/${{ github.repository }}/actions/workflows/nieuwsupdate.yml/enable
+        env:
+          GH_TOKEN: ${{ github.token }}
