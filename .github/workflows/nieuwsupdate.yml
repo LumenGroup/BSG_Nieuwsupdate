@@ -1,18 +1,12 @@
-name: Wekelijkse nieuwsupdate
+name: Dagelijkse nieuwsupdate
 
-# Draait elke maandag om 07:00 UTC (09:00 NL zomertijd / 08:00 wintertijd)
-# en is ook handmatig te starten via de knop "Run workflow".
+# Draait elke werkdag (ma t/m vr) om 01:00 UTC. GitHub start geplande runs in
+# de praktijk flink later (vaak rond 07:00-09:00 NL), daarom dit vroege tijdstip.
+# Ook handmatig te starten via de knop "Run workflow".
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 1 * * 1"
-    #- cron: "*/5 * * * *"
-  
-# Test: om de 5 minuten draaien
-#on:
-  #workflow_dispatch:
-  #schedule:
-    #- cron: "*/5 * * * *"
+    - cron: "0 1 * * 1-5"
 
 # Rechten die GitHub Pages nodig heeft.
 permissions:
