@@ -1,5 +1,6 @@
 """
-Hoofdscript. Draai dit wekelijks (via GitHub Actions of lokaal):
+Hoofdscript. Draait elke werkdag via GitHub Actions. Lokaal testen kan met
+src/preview.py (zelfde bronnen, opent het resultaat in je browser). Of direct:
     python src/main.py
 
 Resultaat: een bestand build/index.html dat GitHub Pages publiceert.

@@ -4,11 +4,16 @@ Alle instelbare waarden staan hier bij elkaar, zodat je niets in de logica hoeft
 """
 
 # --- Tijdvenster ---------------------------------------------------------
-# Aantal dagen terug dat als "nieuw" telt. Wekelijks = 7.
+# Aantal dagen terug dat in de nieuwsupdate wordt getoond.
 DAGEN_TERUG = 7
+# Berichten van de afgelopen zoveel uur komen bovenaan in een apart blok.
+# Strikt 24 uur, ook op maandag (weekendberichten staan dan in de categorieën).
+UREN_NIEUW = 24
 
 # --- Bronnen -------------------------------------------------------------
 
+# De volgorde telt: staat hetzelfde bericht (zelfde link of titel) in meerdere
+# feeds, dan blijft alleen het exemplaar van de bron die hier het hoogst staat.
 RSS_BRONNEN = [
     {
 	    "naam": "Het Financiële Dagblad (FD)",
@@ -17,9 +22,15 @@ RSS_BRONNEN = [
         "filter_op_trefwoord": True,
     },
     {
-	    "naam": "Accountant.nl",
+	    "naam": "Accountant.nl (Vaktechniek)",
         "categorie": "Nieuws",
         "url": "https://www.accountant.nl/vaktechniek/?type=rss",
+        "filter_op_trefwoord": True,
+    },
+    {
+        "naam": "Accountant.nl (Nieuws)",
+        "categorie": "Nieuws",
+        "url": "https://www.accountant.nl/nieuws/?type=rss",
         "filter_op_trefwoord": True,
     },
     {
@@ -41,16 +52,10 @@ RSS_BRONNEN = [
 	    "filter_op_trefwoord": False,
     },
     {
-	    "naam": "Verenigde Bitcoinbedrijven Nederland (VBNL)",
+	    "naam": "Nederlandse Vereniging Cryptodienstverleners (NVC)",
 	    "categorie": "Brancheorganisatie",
-	    "url": "https://www.vbnl.org/feed/",
+	    "url": "https://www.nvc-nl.org/blog-feed.xml",
 	    "filter_op_trefwoord": False,
-    },
-    {
-	    "naam": "De Nederlandsche Bank (DNB)",
-	    "categorie": "Centrale Bank",
-	    "url": "https://www.dnb.nl/nl/rss/16451/6882",
-	    "filter_op_trefwoord": True,
     },
     {
 	    "naam": "Autoriteit Financiële Markten (AFM)",
@@ -181,7 +186,7 @@ TREFWOORDEN_FINANCE = [
     # "werkdag" en zou daardoor vooral ruis opleveren.
 ]
 
-# Crypto en betaalinstellingen komen terug via VBNL en VBIN specifiek.
+# Crypto en betaalinstellingen komen terug via NVC (voorheen VBNL) en VBIN specifiek.
 TREFWOORDEN_CRYPTO_PAYMENTS = [
     # bestaand
     "micar", "crypto-activa", "cryptoactiva", "bitcoin",
@@ -230,4 +235,4 @@ HUISSTIJL = {
 
 # Titel en subtitel van de nieuwsbrief.
 NIEUWSBRIEF_TITEL = "BrightStone Group Nieuwsupdate"
-NIEUWSBRIEF_SUBTITEL = "Wekelijkse update met nieuws en publicaties in Finance, Data, Risk & Compliance. Update elke maandagochtend. Website wordt niet gearchiveerd, oude versies kunnen worden opgeslagen door de HTML-code lokaal op je pc op te slaan (CTRL+S in de browser)."
+NIEUWSBRIEF_SUBTITEL = "Dagelijkse update met nieuws en publicaties in Finance, Data, Risk & Compliance van de afgelopen week. Elke werkdag in de ochtend automatisch bijgewerkt, met de berichten van de afgelopen 24 uur bovenaan. Website wordt niet gearchiveerd, oude versies kunnen worden opgeslagen door de HTML-code lokaal op je pc op te slaan (CTRL+S in de browser)."

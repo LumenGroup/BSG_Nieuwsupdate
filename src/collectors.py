@@ -13,9 +13,10 @@ Elk item is een dict:
 """
 
 from datetime import datetime, timedelta, timezone
-import time
+import calendar
 import html
 import re
+from urllib.parse import urlsplit, parse_qsl, urlencode
 import xml.etree.ElementTree as ET
 
 import requests
@@ -72,7 +73,10 @@ def _bevat_trefwoord(*teksten) -> bool:
 def _struct_naar_dt(struct_time):
     if not struct_time:
         return None
-    return datetime.fromtimestamp(time.mktime(struct_time), tz=timezone.utc)
+    # feedparser levert de tijd al in UTC. calendar.timegm leest hem ook als
+    # UTC; time.mktime zou hem als lokale tijd lezen en is op een Nederlandse
+    # pc dan 1 a 2 uur verschoven (relevant voor het 24-uursblok).
+    return datetime.fromtimestamp(calendar.timegm(struct_time), tz=timezone.utc)
 
 
 # --------------------------------------------------------------------------
@@ -92,22 +96,12 @@ def haal_rss(bron: dict) -> list:
         return items
 
     for entry in feed.entries:
-        datum = _struct_naar_dt(    
-            getattr(entry, "published_parsed", None)
-            or getattr(entry, "updated_parsed", None)
-            or getattr(entry, "created_parsed", None)
-            or getattr(entry, "expired_parsed", None)
-
-        )
-        # Fallback: gebruik huidige tijd zodat item niet verloren gaat
-        if datum is None:
-            datum = _nu_utc()
-        if datum < grens:
-            continue     
         datum = _struct_naar_dt(
             getattr(entry, "published_parsed", None)
             or getattr(entry, "updated_parsed", None)
         )
+        # Items zonder datum slaan we over: met "nu" als datum zouden ze
+        # elke dag opnieuw in het 24-uursblok verschijnen.
         if datum is None or datum < grens:
             continue
         titel = getattr(entry, "title", "").strip()
@@ -128,11 +122,57 @@ def haal_rss(bron: dict) -> list:
 
 
 # --------------------------------------------------------------------------
+_TRACKING_PARAMS = {"fbclid", "gclid", "mc_cid", "mc_eid", "ref", "source"}
+
+
+def _sleutel_url(url: str) -> str:
+    """Link zonder trackingparameters (utm_... en dergelijke), #-anker, slash
+    aan het eind en hoofdletters. Overige parameters blijven staan: sommige
+    bronnen zetten daar het eigenlijke adres in, zoals Rechtspraak.nl
+    (details?id=ECLI:...)."""
+    delen = urlsplit((url or "").strip())
+    query = sorted(
+        (k, v) for k, v in parse_qsl(delen.query, keep_blank_values=True)
+        if not k.lower().startswith("utm_") and k.lower() not in _TRACKING_PARAMS
+    )
+    pad = delen.path.rstrip("/")
+    return f"{delen.netloc}{pad}?{urlencode(query)}".lower()
+
+
+def _sleutel_titel(titel: str) -> str:
+    return re.sub(r"\s+", " ", (titel or "")).strip().lower()
+
+
+def ontdubbel(items: list) -> list:
+    """Haalt dubbele berichten weg: zelfde link of zelfde titel telt als dubbel.
+
+    Het eerste exemplaar blijft staan. Omdat verzamel_alles de bronnen ophaalt
+    in de volgorde van RSS_BRONNEN in config.py, bepaalt die volgorde welke bron
+    voorrang krijgt, ook als de dubbelen in verschillende categorieën vallen.
+    Het bericht verschijnt dan alleen in de categorie van de bron die wint.
+    """
+    gezien_url, gezien_titel, uniek = set(), set(), []
+    for item in items:
+        u, t = _sleutel_url(item["url"]), _sleutel_titel(item["titel"])
+        if (u and u in gezien_url) or (t and t in gezien_titel):
+            print(f"  [dubbel overgeslagen] {item['bron']}: {item['titel'][:80]}")
+            continue
+        if u:
+            gezien_url.add(u)
+        if t:
+            gezien_titel.add(t)
+        uniek.append(item)
+    return uniek
+
+
 def verzamel_alles() -> list:
     alles = []
     for bron in config.RSS_BRONNEN:
         print(f"Ophalen: {bron['naam']} ...")
         alles.extend(haal_rss(bron))
+    # Dubbelen eruit (vóór het sorteren, zodat de bronvolgorde uit config.py
+    # bepaalt welk exemplaar blijft).
+    alles = ontdubbel(alles)
     # Sorteer nieuwste eerst.
     alles.sort(key=lambda x: x["datum"], reverse=True)
     return alles
